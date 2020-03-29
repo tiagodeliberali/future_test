@@ -23,6 +23,8 @@ struct SharedState {
     waker: Option<Waker>,
 
     duration: Duration,
+
+    thread_started: bool,
 }
 
 impl Future for TimerFuture {
@@ -33,7 +35,8 @@ impl Future for TimerFuture {
 
         let mut shared_state = self.shared_state.lock().unwrap();
 
-        if shared_state.waker.is_none() {
+        if !shared_state.thread_started {
+            shared_state.thread_started = true;
             // Spawn the new thread
             let duration = shared_state.duration;
             thread::spawn(move || {
@@ -77,6 +80,7 @@ impl TimerFuture {
             completed: false,
             waker: None,
             duration,
+            thread_started: false,
         }));
 
         TimerFuture { shared_state }
