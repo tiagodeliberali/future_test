@@ -50,7 +50,8 @@ pub fn new_executor_and_spawner() -> (Executor, Spawner) {
 
 impl Spawner {
     pub fn spawn<F>(&self, future: impl Future<Output = ()> + 'static + Send, action: F)
-    where F: FnOnce() + Send + 'static,
+    where
+        F: FnOnce() + Send + 'static,
     {
         let future = future.boxed();
         let task = Arc::new(Task {
@@ -93,7 +94,7 @@ impl Executor {
                     // back in its task to be run again in the future.
                     *future_slot = Some(future);
                 } else if let Some(action) = task.then.lock().unwrap().take() {
-                        action();
+                    action();
                 }
             }
         }
