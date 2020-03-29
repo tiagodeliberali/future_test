@@ -25,24 +25,16 @@ fn main() {
     });
 
     let join_test = Join::new(
-        async {
-            TimerFuture::new(Duration::new(8, 0)).await;
-        },
-        async {
-            TimerFuture::new(Duration::new(5, 0)).await;
-        },
+        TimerFuture::new(Duration::new(8, 0)),
+        TimerFuture::new(Duration::new(5, 0)),
     );
     spawner.spawn(join_test, || {
         log(3, "Join finalizado - 8s");
     });
 
     let and_then_test = AndThenFut::new(
-        async {
-            TimerFuture::new(Duration::new(5, 0)).await;
-        },
-        async {
-            TimerFuture::new(Duration::new(8, 0)).await;
-        },
+        TimerFuture::new(Duration::new(5, 0)),
+        TimerFuture::new(Duration::new(8, 0)),
     );
     spawner.spawn(and_then_test, || {
         log(4, "AndThenFut finalizado - 13s");
